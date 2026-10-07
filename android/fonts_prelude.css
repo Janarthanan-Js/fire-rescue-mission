@@ -1,0 +1,6 @@
+/* ---- Bundled fonts (offline; no network needed on device) ---- */
+@font-face{font-family:'Luckiest Guy';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/luckiest-guy.ttf') format('truetype');}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:600;font-display:swap;src:url('fonts/nunito-600.ttf') format('truetype');}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:700;font-display:swap;src:url('fonts/nunito-700.ttf') format('truetype');}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:800;font-display:swap;src:url('fonts/nunito-800.ttf') format('truetype');}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:900;font-display:swap;src:url('fonts/nunito-900.ttf') format('truetype');}

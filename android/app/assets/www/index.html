@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#10131c" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="description" content="Fire Rescue Mission - a 2D mobile firefighting rescue game. Rescue victims, extinguish fires and save the day across 10 levels." />
+<title>Fire Rescue Mission</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%92%3C/text%3E%3C/svg%3E" />
+<link href="assets/fa/css/all.min.css" rel="stylesheet" />
+<link href="style.css" rel="stylesheet" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Loading -->
+    <div id="screen-loading" class="screen active">
+      <div class="loader-wrap">
+        <div class="flame-logo big">&#128658;</div>
+        <h1 class="logo-text">FIRE RESCUE<br /><span>MISSION</span></h1>
+        <div class="loading-bar"><i></i></div>
+        <p class="muted">Preparing your gear&hellip;</p>
+      </div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud" class="hud hidden">
+      <div class="hud-top">
+        <div class="hud-left">
+          <div class="hud-chip chip-time"><i class="fa-solid fa-stopwatch"></i><span id="hud-time">2:00</span></div>
+          <div class="hud-chip chip-level"><i class="fa-solid fa-fire-flame-simple"></i><span id="hud-level">1</span></div>
+        </div>
+        <div class="hud-mid">
+          <div class="bar health" title="Health"><i class="fa-solid fa-heart"></i><div class="bar-track"><i id="hud-health-fill"></i></div></div>
+          <div class="bar water" title="Water"><i class="fa-solid fa-droplet"></i><div class="bar-track"><i id="hud-water-fill"></i></div></div>
+        </div>
+        <div class="hud-right">
+          <button id="btn-pause" class="icon-btn" aria-label="Pause"><i class="fa-solid fa-pause"></i></button>
+        </div>
+      </div>
+      <div class="hud-objectives" id="hud-objectives"></div>
+      <div class="hud-task" id="hud-task"></div>
+      <div class="hud-dino" id="hud-dino"></div>
+      <div class="hud-hint" id="hud-hint"></div>
+      <div class="hud-toast-wrap" id="hud-toasts"></div>
+      <div class="hud-tutorial" id="hud-tutorial"></div>
+    </div>
+
+    <div id="ui-root"></div>
+
+    <!-- On-screen touch controls (joystick + actions) -->
+    <div id="controls" class="controls hidden">
+      <div id="joy-zone" class="joy-zone">
+        <div id="joy-base" class="joy-base">
+          <div id="joy-knob" class="joy-knob"></div>
+        </div>
+      </div>
+      <div class="ctrl-buttons">
+        <button id="btn-rescue" class="ctrl-btn rescue-btn" aria-label="Rescue"><i class="fa-solid fa-hand-holding-heart"></i>RESCUE</button>
+        <button id="btn-water" class="ctrl-btn water-btn" aria-label="Spray water"><i class="fa-solid fa-droplet"></i>WATER</button>
+      </div>
+    </div>
+
+    <div id="rotate-hint" class="rotate-hint hidden"><i class="fa-solid fa-mobile-screen-button"></i><p>Rotate to portrait for the best experience</p></div>
+  </div>
+
+  <script src="game/config.js"></script>
+  <script src="game/save.js"></script>
+  <script src="game/audio.js"></script>
+  <script src="game/fx.js"></script>
+  <script src="game/levels.js"></script>
+  <script src="game/entities.js"></script>
+  <script src="game/input.js"></script>
+  <script src="game/ui.js"></script>
+  <script src="game/game.js"></script>
+  <script src="game/main.js"></script>
+</body>
+</html>
