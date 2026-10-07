@@ -31,10 +31,11 @@
     // ---- Dinosaur (lethal predator - cannot be killed or repelled) ----
     DINO: {
       RADIUS: 30,
-      SPEED: 118,              // base chase speed (px/s) - below player speed on purpose
-      SPEED_PER_LEVEL: 0.045,  // campaign: speed scaling per level past INTRO_LEVEL
-      SPEED_PER_WAVE: 0.02,    // endless: speed scaling per wave past INTRO_WAVE
-      SPEED_MAX_MULT: 1.5,     // hard cap so the player can always (just) outrun
+      SPEED: 92,               // base chase speed (px/s) - safely below player speed
+      SPEED_PER_LEVEL: 0.028,  // campaign: speed scaling per level past INTRO_LEVEL
+      SPEED_PER_WAVE: 0.016,   // endless: speed scaling per wave past INTRO_WAVE
+      SPEED_MAX_MULT: 1.28,    // hard cap so the player can always outrun it
+      SPEED_CAP_MULT: 0.86,    // effective speed never exceeds this * player speed
       INTRO_LEVEL: 3,          // campaign: first level that can spawn a dinosaur
       INTRO_WAVE: 4,           // endless: first wave that can spawn a dinosaur
       WARN_TIME: 2.0,          // roar/telegraph at spawn before it starts hunting
@@ -47,7 +48,7 @@
       MIN_GAP: 14,
       MAX_ACTIVE: 2,           // most dinos hunting at once
       LUNGE_RANGE: 250,        // starts a short burst when this close
-      LUNGE_MULT: 1.7,
+      LUNGE_MULT: 1.14,        // short burst, still slower than the player
       LUNGE_TIME: 0.55,
       LUNGE_COOLDOWN: 5.5,
       ATTACK_RANGE: 40,        // bite reach (world px from centres)

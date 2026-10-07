@@ -425,21 +425,34 @@
     if (dl) {
       var active = game.dinos && game.dinos.length > 0;
       var warned = game.dinoAlert > 0;
+      var cls, sig;
       if (warned) {
-        dl.className = 'hud-dino warn show';
-        dl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> DANGER! DINOSAUR APPROACHING!';
+        cls = 'hud-dino warn show';
+        sig = 'warn';
       } else if (active) {
         var dist = game.dinoNearest;
         var close = dist < CFG.DINO.VIGNETTE_DIST;
         var lvl = close ? (1 - dist / CFG.DINO.VIGNETTE_DIST) : 0;
         var txt = dist === Infinity ? 'SEARCHING' : (Math.round(dist / CFG.TILE) + 'm');
-        dl.className = 'hud-dino show' + (lvl > 0.66 ? ' close' : (lvl > 0.33 ? ' near' : ''));
-        dl.innerHTML = '<i class="fa-solid fa-dragon"></i> DINOSAUR <b>' + txt + '</b>';
-      } else if (dl.className.indexOf('show') >= 0) {
-        dl.className = 'hud-dino';
-        dl.innerHTML = '';
+        cls = 'hud-dino show' + (lvl > 0.66 ? ' close' : (lvl > 0.33 ? ' near' : ''));
+        sig = 'dino:' + txt + ':' + cls;
       } else {
-        dl.className = 'hud-dino';
+        cls = 'hud-dino';
+        sig = 'off';
+      }
+      // Only touch the DOM when the rendered state actually changes
+      // (this block used to rewrite innerHTML at 60fps and jank/crash
+      // the Android WebView the moment a dinosaur spawned).
+      if (dl.dataset.sig !== sig) {
+        dl.dataset.sig = sig;
+        dl.className = cls;
+        if (sig === 'warn') {
+          dl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> DANGER! DINOSAUR APPROACHING!';
+        } else if (sig === 'off') {
+          dl.innerHTML = '';
+        } else {
+          dl.innerHTML = '<i class="fa-solid fa-dragon"></i> DINOSAUR <b>' + txt + '</b>';
+        }
       }
     }
   };

@@ -803,6 +803,10 @@
 
   // Move with wall collision + a slide fallback so it never wedges.
   Dino.prototype._step = function (ang, speed, dt, game) {
+    // Hard guarantee: the predator can never move faster than the player,
+    // so a running player always escapes (even at max level/wave scaling).
+    var cap = CFG.PLAYER.SPEED * CFG.DINO.SPEED_CAP_MULT;
+    if (speed > cap) speed = cap;
     var lv = game.level, r = this.radius * 0.78;
     var vx = Math.cos(ang) * speed, vy = Math.sin(ang) * speed;
     this.vx = vx; this.vy = vy;
@@ -1010,9 +1014,12 @@
     ctx.beginPath(); ctx.ellipse(-R * 0.1, R * 0.62 - swing * 8, R * 0.34, R * 0.46, 0, 0, 6.283); ctx.fill();
 
     // body
-    var bg = ctx.createLinearGradient(0, -R, 0, R);
-    bg.addColorStop(0, skinL); bg.addColorStop(0.5, skin); bg.addColorStop(1, skinD);
-    ctx.fillStyle = bg;
+    if (!this._bodyGrad) {
+      var bg = ctx.createLinearGradient(0, -R, 0, R);
+      bg.addColorStop(0, skinL); bg.addColorStop(0.5, skin); bg.addColorStop(1, skinD);
+      this._bodyGrad = bg;
+    }
+    ctx.fillStyle = this._bodyGrad;
     ctx.beginPath(); ctx.ellipse(0, 0, R * 1.05, R * 0.78, 0, 0, 6.283); ctx.fill();
 
     // back stripes

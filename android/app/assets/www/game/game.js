@@ -299,8 +299,14 @@
       if (this.dinos[i].gone) this.dinos.splice(i, 1);
     }
 
-    this.audio.setDinoLevel(this.dinoNearest === Infinity ? 0
-      : clamp(1 - this.dinoNearest / D.VIGNETTE_DIST, 0, 1));
+    // Audio drone tracks proximity, but only nudge it when the value
+    // actually moves (avoiding a Web Audio scheduling call every frame).
+    var dlvl = this.dinoNearest === Infinity ? 0
+      : clamp(1 - this.dinoNearest / D.VIGNETTE_DIST, 0, 1);
+    if (Math.abs(dlvl - (this._dinoAudLvl || 0)) > 0.02 || (dlvl === 0 && this._dinoAudLvl)) {
+      this._dinoAudLvl = dlvl;
+      this.audio.setDinoLevel(dlvl);
+    }
   };
 
   Game.prototype.activeDinoCount = function () {
@@ -1118,21 +1124,33 @@
       var prox = 1 - clamp(this.dinoNearest / D.VIGNETTE_DIST, 0, 1);   // 0 far -> 1 close
       var beat = 0.55 + 0.45 * Math.abs(Math.sin(performance.now() / (200 - prox * 90)));
       var da = (0.10 + prox * 0.42) * beat;
-      var dg = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * (0.30 - prox * 0.08), w / 2, h / 2, Math.max(w, h) * 0.68);
-      dg.addColorStop(0, 'rgba(255,20,20,0)');
-      dg.addColorStop(1, 'rgba(220,10,10,' + da.toFixed(3) + ')');
-      ctx.fillStyle = dg;
+      // Cache the (size-dependent) gradient; animate only its alpha so we
+      // don't allocate a fresh full-screen gradient every single frame.
+      if (!this._dinoVigGrad || this._dinoVigW !== w || this._dinoVigH !== h) {
+        var dg = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.26, w / 2, h / 2, Math.max(w, h) * 0.68);
+        dg.addColorStop(0, 'rgba(255,20,20,0)');
+        dg.addColorStop(1, 'rgba(220,10,10,1)');
+        this._dinoVigGrad = dg; this._dinoVigW = w; this._dinoVigH = h;
+      }
+      ctx.globalAlpha = clamp(da, 0, 1);
+      ctx.fillStyle = this._dinoVigGrad;
       ctx.fillRect(0, 0, w, h);
+      ctx.globalAlpha = 1;
     }
 
     // low-health warning
     if (this.player && this.player.health / this.player.maxHealth < 0.3 && this.state === 'playing') {
       var a = 0.12 + 0.10 * Math.sin(performance.now() / 260);
-      var g = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.28, w / 2, h / 2, Math.max(w, h) * 0.62);
-      g.addColorStop(0, 'rgba(255,0,0,0)');
-      g.addColorStop(1, 'rgba(255,0,0,' + a.toFixed(3) + ')');
-      ctx.fillStyle = g;
+      if (!this._lowHpVigGrad || this._lowHpVigW !== w || this._lowHpVigH !== h) {
+        var g = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.28, w / 2, h / 2, Math.max(w, h) * 0.62);
+        g.addColorStop(0, 'rgba(255,0,0,0)');
+        g.addColorStop(1, 'rgba(255,0,0,1)');
+        this._lowHpVigGrad = g; this._lowHpVigW = w; this._lowHpVigH = h;
+      }
+      ctx.globalAlpha = clamp(a, 0, 1);
+      ctx.fillStyle = this._lowHpVigGrad;
       ctx.fillRect(0, 0, w, h);
+      ctx.globalAlpha = 1;
     }
     // smoke haze when many fires
     var fireRatio = this.level ? (this.aliveFireCount() / Math.max(1, this.initialFireCount)) : 0;

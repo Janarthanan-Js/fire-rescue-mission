@@ -208,10 +208,14 @@
   // Drives a low dino drone whose gain + filter track proximity.
   Audio.setDinoLevel = function (level) {
     Audio._dinoLevel = level || 0;
-    Audio.init();
-    if (!Audio.ctx || !Audio._dinoDrone) return;
+    // Only touch the audio graph once the context already exists: creating a
+    // context here would run on the very first frame a dino appears (a common
+    // spot for mobile WebView hiccups). Resume/gesture handling lives elsewhere.
+    if (!Audio.ctx) return;
+    if (!Audio._dinoDrone) Audio._ensureDinoDrone();
+    if (!Audio._dinoDrone) return;
     try {
-      Audio._dinoDrone.gain.setTargetAtTime(0.0016 + Audio._dinoLevel * 0.05, now(), 0.15);
+      Audio._dinoDrone.gain.gain.setTargetAtTime(0.0016 + Audio._dinoLevel * 0.05, now(), 0.15);
       if (Audio._dinoDrone.filt) {
         Audio._dinoDrone.filt.frequency.setTargetAtTime(90 + Audio._dinoLevel * 320, now(), 0.2);
       }
